@@ -3,14 +3,12 @@
 def jdk = "8"
 
 node("docker") {
-    stage("Checkout (${stageIdentifier})") {
+    stage("Checkout") {
         if (env.BRANCH_NAME) {
             checkout scm
-        }
-        else if ((env.BRANCH_NAME == null) && (repo)) {
+        } else if ((env.BRANCH_NAME == null) && (repo)) {
             git repo
-        }
-        else {
+        } else {
             error 'buildPlugin must be used as part of a Multibranch Pipeline *or* a `repo` argument must be provided'
         }
 
@@ -42,9 +40,9 @@ node("docker") {
         }
     }
 
-    def outputWAR = "/target/custom-war-packager-maven-plugin/output/target/jenkins-war-1.0-artifact-manager-s3-SNAPSHOT.war"
+    def outputWAR = pwd() + "/target/custom-war-packager-maven-plugin/output/target/jenkins-war-1.0-artifact-manager-s3-SNAPSHOT.war"
     stage("Run ATH") {
-        def fileUri = "file://" + pwd() + outputWAR
+        def fileUri = "file://" + outputWAR
         def metadataPath = pwd() + "/ath.yml"
         dir("ath") {
             runATH jenkins: fileUri, metadataFile: metadataPath
@@ -52,9 +50,11 @@ node("docker") {
     }
 
     stage("Run PCT") {
+        def pctReportDir = pwd() + "pct_report"
         dir("pct") {
             // Should fail until https://github.com/jenkinsci/copyartifact-plugin/pull/99 or /100
-            sh "docker run --rm -v maven-repo:/root/.m2 -v \$(pwd)/out:/pct/out -v my/jenkins.war:/pct/jenkins.war:ro -e ARTIFACT_ID=copyartifact jenkins/pct"
+            sh "docker run --rm -v maven-repo:/root/.m2 -v ${pctReportDir}/out:/pct/out -v ${outputWAR}:/pct/jenkins.war:ro -e ARTIFACT_ID=copyartifact jenkins/pct"
+            //TODO: publish the report
         }
     }
 }
