@@ -11,6 +11,21 @@
 
   <build>
     <plugins>
+      <!-- TODO: ensures that the maven-dependency-plugin is available before we start the build -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <configuration>
+              <artifact>io.jenkins.tools.custom-war-packager:custom-war-packager-maven-plugin:0.1-alpha-3</artifact>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Build -->
       <plugin>
         <groupId>io.jenkins.tools.custom-war-packager</groupId>
         <artifactId>custom-war-packager-maven-plugin</artifactId>
