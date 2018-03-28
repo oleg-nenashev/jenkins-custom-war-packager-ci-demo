@@ -43,19 +43,23 @@ node("docker") {
     }
 
     def outputWAR = pwd() + "/" + outputWARpattern
-    stage("Run ATH") {
+  /*  stage("Run ATH") {
         def fileUri = "file://" + outputWAR
         def metadataPath = pwd() + "/ath.yml"
         dir("ath") {
             runATH jenkins: fileUri, metadataFile: metadataPath
         }
-    }
+    }*/
 
     stage("Run PCT") {
         def pctReportDir = pwd() + "pct_report"
         dir("pct") {
+            dir ("repo") {
+                git clone "https://github.com/jenkinsci/artifact-manager-s3-plugin.git"
+            }
+            def pluginSrc = pwd() + "repo"
             // Should fail until https://github.com/jenkinsci/copyartifact-plugin/pull/99 or /100
-            sh "docker run --rm -v maven-repo:/root/.m2 -v ${pctReportDir}/out:/pct/out -v ${outputWAR}:/pct/jenkins.war:ro -e ARTIFACT_ID=copyartifact jenkins/pct"
+            sh "docker run --rm -v maven-repo:/root/.m2 -v ${pctReportDir}/out:/pct/out -v ${outputWAR}:/pct/jenkins.war:ro -v ${pluginSrc}:/pct/plugin-src:ro jenkins/pct"
             //TODO: publish the report
         }
     }
