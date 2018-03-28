@@ -15,6 +15,7 @@ node("docker") {
         isMaven = fileExists('pom.xml')
     }
 
+    def outputWAR = pwd() + "/target/custom-war-packager-maven-plugin/output/target/jenkins-war-1.0-artifact-manager-s3-SNAPSHOT.war"
     stage("Build Custom WAR") {
         String jdkTool = "jdk${jdk}"
         List<String> env = [
@@ -38,9 +39,9 @@ node("docker") {
                 bat command
             }
         }
+        archiveArtifacts artifacts: outputWAR
     }
 
-    def outputWAR = pwd() + "/target/custom-war-packager-maven-plugin/output/target/jenkins-war-1.0-artifact-manager-s3-SNAPSHOT.war"
     stage("Run ATH") {
         def fileUri = "file://" + outputWAR
         def metadataPath = pwd() + "/ath.yml"
