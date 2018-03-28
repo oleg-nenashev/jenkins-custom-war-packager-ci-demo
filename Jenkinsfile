@@ -43,13 +43,13 @@ node("docker") {
     }
 
     def outputWAR = pwd() + "/" + outputWARpattern
-    /*stage("Run ATH") {
+    stage("Run ATH") {
         def fileUri = "file://" + outputWAR
         def metadataPath = pwd() + "/ath.yml"
         dir("ath") {
             runATH jenkins: fileUri, metadataFile: metadataPath
         }
-    }*/
+    }
 
     stage("Run PCT") {
         def pctReportDir = pwd() + "/pct_report"
