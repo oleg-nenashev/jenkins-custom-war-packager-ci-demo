@@ -43,7 +43,7 @@ node("docker") {
     }
 
     def outputWAR = pwd() + "/" + outputWARpattern
-  /*  stage("Run ATH") {
+    /*stage("Run ATH") {
         def fileUri = "file://" + outputWAR
         def metadataPath = pwd() + "/ath.yml"
         dir("ath") {
@@ -55,7 +55,7 @@ node("docker") {
         def pctReportDir = pwd() + "pct_report"
         dir("pct") {
             dir ("repo") {
-                git clone "https://github.com/jenkinsci/artifact-manager-s3-plugin.git"
+                git "https://github.com/jenkinsci/artifact-manager-s3-plugin.git"
             }
             def pluginSrc = pwd() + "repo"
             // Should fail until https://github.com/jenkinsci/copyartifact-plugin/pull/99 or /100
