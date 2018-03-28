@@ -52,12 +52,12 @@ node("docker") {
     }*/
 
     stage("Run PCT") {
-        def pctReportDir = pwd() + "pct_report"
+        def pctReportDir = pwd() + "/pct_report"
         dir("pct") {
             dir ("repo") {
                 git "https://github.com/jenkinsci/artifact-manager-s3-plugin.git"
             }
-            def pluginSrc = pwd() + "repo"
+            def pluginSrc = pwd() + "/repo"
             // Should fail until https://github.com/jenkinsci/copyartifact-plugin/pull/99 or /100
             sh "docker run --rm -v maven-repo:/root/.m2 -v ${pctReportDir}/out:/pct/out -v ${outputWAR}:/pct/jenkins.war:ro -v ${pluginSrc}:/pct/plugin-src:ro jenkins/pct"
             //TODO: publish the report
