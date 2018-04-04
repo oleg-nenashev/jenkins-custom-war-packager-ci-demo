@@ -3,6 +3,7 @@
 def jdk = "8"
 
 node("docker") {
+  configFileProvider([configFile(fileId: getMavenSettingsFileId(), variable: 'mvnSettingsFile')]) {
     stage("Checkout") {
         if (env.BRANCH_NAME) {
             checkout scm
@@ -28,7 +29,9 @@ node("docker") {
             '--batch-mode',
             '--errors',
             'clean',
-            'install'
+            'install',
+            "-Dcustom-war-packager.mvnSettingsFile=${mvnSettingsFile}",
+            '-s', "${mvnSettingsFile}"
         ]
 
         command = "mvn ${mavenOptions.join(' ')}"
@@ -63,4 +66,5 @@ node("docker") {
             //TODO: publish the report
         }
     }
+  }
 }

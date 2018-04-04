@@ -9,6 +9,10 @@
 
   <packaging>pom</packaging>
 
+  <properties>
+    <custom-war-packager.mvnSettingsFile></custom-war-packager.mvnSettingsFile>
+  </properties>
+
   <build>
     <plugins>
       <!-- TODO: ensures that the maven-dependency-plugin is available before we start the build -->
@@ -29,7 +33,7 @@
       <plugin>
         <groupId>io.jenkins.tools.custom-war-packager</groupId>
         <artifactId>custom-war-packager-maven-plugin</artifactId>
-        <version>0.1-alpha-3</version>
+        <version>0.1-alpha-4-20180403.135154-1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -39,6 +43,7 @@
             <configuration>
               <configFilePath>packager-config.yml</configFilePath>
               <warVersion>1.0-artifact-manager-s3-SNAPSHOT</warVersion>
+              <mvnSettingsFile>${custom-war-packager.mvnSettingsFile}</mvnSettingsFile>
             </configuration>
           </execution>
         </executions>
